@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script>
+<script type="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js">
+</script>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Desigualdad Monetaria</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
+<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
+<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Inicio
+  </a>
+</li>
+<li>
+  <a href="about.html">
+    <span class="fa fa-info"></span>
+     
+    Acerca de
+  </a>
+</li>
+<li>
+  <a href="documentos.html">
+    <span class="glyphicon glyphicon-tasks"></span>
+     
+    Documentos
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://twitter.com/Nahuel_Sef">
+    <span class="fa fa-twitter fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://linkedin.com/in/nahuel-bargas/">
+    <span class="fa fa-linkedin fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Desigualdad Monetaria</h1>
+<h4 class="date"><em>28 de Febrero, 2019</em></h4>
+
+</div>
+
+
+<div id="introduccion" class="section level1">
+<h1><span class="header-section-number">1</span> Introducción</h1>
+<p>Teniendo cómo referencia la última EPH disponible a la fecha, la del tercer trimestre del 2018, a continuación se compararán diversas medidas de desigualdad monetaria, ampliando un poco más el espectro de análisis de los indicadores sociales disponibles.</p>
+<p>Fueron utilizados los paquetes laeken<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> y convey<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> del software R. He citado las referencias correspondientes en las notas al final de página.</p>
+</div>
+<div id="gini" class="section level1">
+<h1><span class="header-section-number">2</span> Gini</h1>
+<div id="curva-de-lorenz" class="section level2">
+<h2><span class="header-section-number">2.1</span> Curva de Lorenz</h2>
+<p>El índice de Gini es una de las medidas más extendidas para calcular la desigualdad en la distribución del ingreso y es muy utilizado para realizar comparaciones entre otros países. Habitualmente se obtiene relacionando el área entre la curva de Lorenz y la línea de perfecta igualdad(LPI).</p>
+<p>La curva de Lorenz puede ser vista cómo la participación en el ingreso total de una proporción dada(<span class="math inline">\(\alpha\)</span>) de la población,ordenada desde los más pobres hasta los más ricos. La LPI , a su vez, puede ser considerada la curva de Lorenz de una distribución del ingreso perfectamente igualitaria, <span class="math inline">\(L(\alpha)=\alpha\)</span> <strong>(Langel 2012)</strong><a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> En el gráfico 1 se ejemplifica para el tercer trimestre del 2018:</p>
+<p><img src="CLorenz-1.png" width="864" style="display: block; margin: auto;" /></p>
+<p>El 50 % de la población con menores ingresos reúne alrededor del 21% del ingreso total.</p>
+</div>
+<div id="coeficiente-de-gini" class="section level2">
+<h2><span class="header-section-number">2.2</span> Coeficiente de Gini</h2>
+<p>El índice de Gini es igual a dos veces el área entre la LPI y la curva de Lorenz: <span class="math display">\[ G = 2 \int_{0}^{1} [\alpha - L(\alpha)]d\alpha = 1 - 2 \int_{0}^{1}  L(\alpha)d\alpha\]</span></p>
+<p>Cuando la distribución es completamente igualitaria, el valor del coeficiente de Gini es 0. En el otro extremo, el hipotético caso en que un sólo un individuo concentrara todo el ingreso en su persona, el valor del coeficiente de Gini alcanzaría el uno.</p>
+<p>No existen ventajas empíricas del cálculo del coeficiente de Gini en base a las discrepancias promedio de ingreso(en valor absoluto) en relación a la fórmula alternativa relacionada con la curva de Lorenz, cómo señala Walter Sosa Escudero<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> en su nota , ya que de cualquier manera se obtienen indicadores de Gini consistentes.</p>
+<p><img src="Desigualdad_Monetaria_files/figure-html/boot-1.png" width="864" style="display: block; margin: auto;" /></p>
+<p>En el gráfico dos se computaron los coeficientes de Gini para la serie completa de la EPH tras la emergencia estadística. Se utilizó cómo variable al ingreso per cápita familiar (IPCF), la misma variable empleada para construir la curva de Lorenz del gráfico anterior. Dado que los intervalos de confianza estimados mediante un bootstrap simple de 200 repeticiones se superponen para el segundo y tercer trimestre de 2018, el aumento en el coeficiente de Gini estimado para el último trimestre no sería significativo.</p>
+<p>Una propiedad que se le exige a un índice de desigualdad es ser consistente ante las descomposiciones por grupos: si entre dos distribuciones la desigualdad en cada grupo (<em>within inequality</em> )medida por el índice no decrece y la desigualdad entre grupos tampoco cae(<em>between inequality</em>),la desigualdad agregada medida por dicho íncide no puede disminuir.</p>
+<p>El coeficiente de Gini no cumple con esta propiedad, aunque si puede ser descuempuesto por fuentes, por ejemplo, diversos tipos de ingreso.</p>
+<p>En el siguiente cuadro no se realiza una descomposición por fuente de ingreso del coeficiente de Gini, pero se compara la estimación original con la obtenida en el caso de otras dos variables monetarias:</p>
+<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<strong>Cuadro 1- Coecifientes de Gini-Distintas variables monetarias<br />
+En base a la EPH-INDEC</strong>
+</caption>
+<thead>
+<tr>
+<th style="text-align:center;font-weight: bold;color: white;background-color: lightblue;">
+IPCF
+</th>
+<th style="text-align:center;font-weight: bold;color: white;background-color: lightblue;">
+Ingreso total Individual
+</th>
+<th style="text-align:center;font-weight: bold;color: white;background-color: lightblue;">
+Ingreso de la ocupación principal
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;width: 3.2cm; ">
+0.424
+</td>
+<td style="text-align:center;width: 3.2cm; ">
+0.423
+</td>
+<td style="text-align:center;width: 3.2cm; ">
+0.384
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="atkinson-index" class="section level1">
+<h1><span class="header-section-number">3</span> Atkinson Index</h1>
+<p><span class="math display">\[A(\epsilon) = 1- \frac{[\frac{1}{N} \sum_{i=1} x_i^{1-\epsilon}]^ \frac{1}{1-\epsilon}}{\mu}\]</span> , con <span class="math inline">\(\epsilon\)</span> mayor e igual a cero y diferente de uno y <span class="math inline">\(\mu\)</span> el ingreso medio.</p>
+<p>Cuando <span class="math inline">\(\epsilon\)</span> toma el valor de uno, A es igual a 1 menos el ratio de la media geométrica y aritmética: <span class="math display">\[A(1)=1-\frac{exp{E(log(x_i))}}{\mu}\]</span></p>
+<p>El índice de Atkinson, un caso especial del índice de entropía, permite sumar una caracteristica al análisis, la importancia que le da el evaluador(la ponderación) a la diferencia en los ingresos. <strong>Gasparini et al(2013)</strong><a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> mencionan una interpretación de este indice: La proporción del ingreso que el evaluador estaría dispuesto a sacrificar para alcanzar una distribución igualitaria.</p>
+<p>El índice de Atkinson también es una suma ponderada de los ingresos de las personas, pero aquí el ponderador viene dado por elección del parámetro <span class="math inline">\(\epsilon\)</span>,de aversión a la desigualdad.</p>
+<p>Cuando mayor es <span class="math inline">\(\epsilon\)</span> más relevancia se le otorga a las transferencias en el extremo inferior de la distribución, por ende, si epsilon tiende a infinito, el índice vale 1 toda vez que alguien tenga un ingreso cero. Dicho esto, en la práctica se suelen eliminar los ingresos cero antes de iniciar el análisis correpondiente <strong>(Gasparini et al 2013)</strong>.</p>
+<p><img src="Desigualdad_Monetaria_files/figure-html/At-1.png" width="480" style="display: block; margin: auto;" /></p>
+<p>Puede observarse en el gráfico 3 cómo aumenta el índice de Atkinson mientras se incrementa el valor de epsilon, para valores del IPCF obtenidos de la EPH del tercer trimestre del 2018.</p>
+</div>
+<div id="indice-de-entropia-general" class="section level1">
+<h1><span class="header-section-number">4</span> Índice de entropía general</h1>
+<p><span class="math display">\[GE(\epsilon)= 1 -[(\epsilon^2 - \epsilon)E(1-\epsilon)+1]^\frac{1}{1-\epsilon}\]</span></p>
+<p>Este indicador posee propiedades interesantes,el principio de Dalton-Piguou(ante una transferencia de ingresos igualadora, el indicador no debe aumentar),invarianza a la escala y a las replicas, pero a diferencia del coeficiente de Gini,es consistente ante las descomposiciones.</p>
+<p>Las descomposiciones pueden presentarse cómo la simple suma de dos términos,la desigualdad entre grupos,y un promedio ponderado de la desigualdad dentro de cada grupo.</p>
+<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<strong>Cuadro 2- índice de Entropía General-EG(0.5)<br />
+Fuente:En base a la EPH-INDEC</strong>
+</caption>
+<thead>
+<tr>
+<th style="text-align:center;font-weight: bold;color: white;background-color: lightblue;">
+Variable
+</th>
+<th style="text-align:center;font-weight: bold;color: white;background-color: lightblue;">
+Total
+</th>
+<th style="text-align:center;font-weight: bold;color: white;background-color: lightblue;">
+Within
+</th>
+<th style="text-align:center;font-weight: bold;color: white;background-color: lightblue;">
+Between
+</th>
+<th style="text-align:center;font-weight: bold;color: white;background-color: lightblue;">
+Within (%)
+</th>
+<th style="text-align:center;font-weight: bold;color: white;background-color: lightblue;">
+Between (%)
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;font-weight: bold;border-right:1px solid;">
+IPCF
+</td>
+<td style="text-align:center;">
+0.30
+</td>
+<td style="text-align:center;">
+0.24
+</td>
+<td style="text-align:center;">
+0.06
+</td>
+<td style="text-align:center;width: 3.5cm; ">
+80.23
+</td>
+<td style="text-align:center;width: 3.5cm; ">
+19.77
+</td>
+</tr>
+<tr>
+<td style="text-align:center;font-weight: bold;border-right:1px solid;">
+Ingreso total Individual
+</td>
+<td style="text-align:center;">
+0.31
+</td>
+<td style="text-align:center;">
+0.25
+</td>
+<td style="text-align:center;">
+0.06
+</td>
+<td style="text-align:center;width: 3.5cm; ">
+80.98
+</td>
+<td style="text-align:center;width: 3.5cm; ">
+19.02
+</td>
+</tr>
+<tr>
+<td style="text-align:center;font-weight: bold;border-right:1px solid;">
+Ingreso de la ocupación principal
+</td>
+<td style="text-align:center;">
+0.26
+</td>
+<td style="text-align:center;">
+0.22
+</td>
+<td style="text-align:center;">
+0.04
+</td>
+<td style="text-align:center;width: 3.5cm; ">
+84.84
+</td>
+<td style="text-align:center;width: 3.5cm; ">
+15.16
+</td>
+</tr>
+</tbody>
+</table>
+<p>En promedio, alrededor del 20% de la desigualdad del ingreso per capita familiar total corresponde a diferencias entre niveles educativos, mientras que el 80% restante corresponde a la desigualdad interna de cada grupo. La situación es similar para la sumatoria de ingresos laborales y no laborales. En el caso del ingreso por la ocupación principal,sólo el 15% de la desigualdad corresponde a las diferencias entre grupos educativos. El cálculo del indicador está dado para un valor de <span class="math inline">\(\epsilon\)</span> de 0.5. Los niveles educativos considerados son siete, sin instrucción,primaria incompleta(incluyendo educación especial, primaria completa, secundaria incompleta,secundaria completa,superior incompleto y finalmente superior completo.</p>
+<p>El valor del índice de entropía, es el doble del obtenido mediante el índice de Atkison(0.14) considerando un epsilon de 0.5, en el caso de todos los individuos de la muestra con IPCF positivo.</p>
+<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<strong>Cuadro 3- índice de Entropía General-EG(1.5)<br />
+Fuente:En base a la EPH-INDEC</strong>
+</caption>
+<thead>
+<tr>
+<th style="text-align:center;font-weight: bold;color: white;background-color: lightblue;">
+Variable
+</th>
+<th style="text-align:center;font-weight: bold;color: white;background-color: lightblue;">
+Total
+</th>
+<th style="text-align:center;font-weight: bold;color: white;background-color: lightblue;">
+Within
+</th>
+<th style="text-align:center;font-weight: bold;color: white;background-color: lightblue;">
+Between
+</th>
+<th style="text-align:center;font-weight: bold;color: white;background-color: lightblue;">
+Within (%)
+</th>
+<th style="text-align:center;font-weight: bold;color: white;background-color: lightblue;">
+Between (%)
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;font-weight: bold;border-right:1px solid;">
+IPCF
+</td>
+<td style="text-align:center;">
+0.35
+</td>
+<td style="text-align:center;">
+0.28
+</td>
+<td style="text-align:center;">
+0.07
+</td>
+<td style="text-align:center;width: 3.5cm; ">
+80.97
+</td>
+<td style="text-align:center;width: 3.5cm; ">
+19.03
+</td>
+</tr>
+<tr>
+<td style="text-align:center;font-weight: bold;border-right:1px solid;">
+Ingreso total Individual
+</td>
+<td style="text-align:center;">
+0.34
+</td>
+<td style="text-align:center;">
+0.28
+</td>
+<td style="text-align:center;">
+0.06
+</td>
+<td style="text-align:center;width: 3.5cm; ">
+81.85
+</td>
+<td style="text-align:center;width: 3.5cm; ">
+18.15
+</td>
+</tr>
+<tr>
+<td style="text-align:center;font-weight: bold;border-right:1px solid;">
+Ingreso de la ocupación principal
+</td>
+<td style="text-align:center;">
+0.26
+</td>
+<td style="text-align:center;">
+0.22
+</td>
+<td style="text-align:center;">
+0.04
+</td>
+<td style="text-align:center;width: 3.5cm; ">
+84.78
+</td>
+<td style="text-align:center;width: 3.5cm; ">
+15.22
+</td>
+</tr>
+</tbody>
+</table>
+<p>Con un valor del coeficiente de aversión a la desigualdad mayor(<span class="math inline">\(\epsilon = 1.5\)</span>), las diferencias entre los grupos educativos no cambian su participación, sin embargo, ahora el valor total de desigualdad del índice de entropía general es menor al valor del índice de Atkinson(0.389), reflejando la mayor sensibilidad de éste último para aumentos en el parámetro epsilon.</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>A. Alfons and M. Templ (2013) Estimation of Social Exclusion Indicators from Complex Surveys: The R Package laeken. Journal of Statistical Software, 54(15), 1–25. URL <a href="http://www.jstatsoft.org/v54/i15/" class="uri">http://www.jstatsoft.org/v54/i15/</a><a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>Income Concentration Analysis with Complex Survey Samples, <a href="https://cran.r-project.org/package=convey" class="uri">https://cran.r-project.org/package=convey</a><a href="#fnref2" class="footnote-back">↩</a></p></li>
+<li id="fn3"><p>Matti Langel (2012). Measuring inequality in finite population sampling. PhD thesis: Universite de Neuchatel, <a href="https://doc.rero.ch/record/29204/files/00002252.pdf" class="uri">https://doc.rero.ch/record/29204/files/00002252.pdf</a>..<a href="#fnref3" class="footnote-back">↩</a></p></li>
+<li id="fn4"><p>Sosa Escudero, W. (2018). A note on a simple interpretation of the Gini coefficient. Económica, LaPlata, Vol.LXIV, Nro.1, 2018.<a href="#fnref4" class="footnote-back">↩</a></p></li>
+<li id="fn5"><p>Gasparini,L. , Cicowiez, M. y Sosa Escudero, W. (2013). Pobreza y Desigualdad en América Latina. Conceptos, Herramientas y Aplicaciones. Editorial Temas. (<a href="http://www.cedlas.econo.unlp.edu.ar/wp/en/publicaciones/libros/pobreza-y-desigualdad-en-america-latina/" class="uri">http://www.cedlas.econo.unlp.edu.ar/wp/en/publicaciones/libros/pobreza-y-desigualdad-en-america-latina/</a>)<a href="#fnref5" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
