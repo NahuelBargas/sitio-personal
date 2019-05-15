@@ -1,0 +1,101 @@
+---
+title: "Mapa de la Tasa de Pobreza en Argentina por regiones " 
+date: 10 de Mayo,20
+output: html_document
+---
+
+```{r setup, include= FALSE}
+
+library(sf)
+library(tidyverse, warn=FALSE)
+library(leaflet)
+
+
+argentina_shp <- readRDS("basemapargentina.rds") #descargar del repositorio : https://github.com/NahuelBargas/sitio-personal/
+ 
+#El shapefile de Argentina lo descargue de la siguiente página : http://www.gadm.org
+#y le agregue los datos de mis estimaciones de la tasa de incidencia de la pobreza monetaria en base 
+#a la EPH INDEC. 
+```
+
+### Tasa  de Incidencia de la pobreza monetaria
+
+Dado que quería experimentar con la posibilidad de representar un mapa geográfico
+en R, a continuación les presento un pequeño ejemplo para Argentina. 
+
+Puede pasar el mouse sobre las partes del mapa u hacer un click, para
+poder visualizar la tasa de pobreza estimada por regiones para cada semestre
+del 2018 en base a datos del INDEC. Deberá seleccionar en el márgen superior derecho
+el período deseado.  En el [repositorio](https://github.com/NahuelBargas/sitio-personal/) encontrará 
+los comandos para replicar el mapa.
+
+```{r incidencia regiones, echo= FALSE}
+
+
+
+state_popup2 <- paste0("<strong>Departamento: </strong>",
+             argentina_shp$departamen,
+             "<br><strong>Región: </strong>",
+             argentina_shp$Region,
+            "<br><strong>Tasa de Pobreza de la Región : </strong>",
+             round(argentina_shp$Tasa_pobreza.x * 100,2),
+            "<strong> % </strong>")
+
+state_popup3 <- paste0("<strong>Departamento: </strong>",
+             argentina_shp$departamen,
+             "<br><strong>Región: </strong>",
+             argentina_shp$Region,
+            "<br><strong>Tasa de Pobreza de la Región : </strong>",
+             round(argentina_shp$Tasa_pobreza.y * 100,2),
+            "<strong> % </strong>")
+
+
+
+tal<-colorBin("plasma",domain=c(0.20,0.42),bins=8,pretty = TRUE)
+
+
+state_label <- paste0(
+             " Región: \n",
+             argentina_shp$Region," --- ",
+            " Tasa de Pobreza de la Región: \n",
+             round(argentina_shp$Tasa_pobreza.x * 100,2),
+            "%")
+
+state_label2 <- paste0(
+             " Región: \n",
+             argentina_shp$Region," --- ",
+            " Tasa de Pobreza de la Región: \n",
+             round(argentina_shp$Tasa_pobreza.y * 100,2),
+            "%")
+
+
+
+leaflet(argentina_shp, options= leafletOptions(minZoom=4)) %>%
+ addProviderTiles("CartoDB.Positron") %>%
+addPolygons(fillColor=~tal(Tasa_pobreza.x),fillOpacity= 0.8,color="White",stroke=TRUE,
+            weight=1,popup = state_popup2,label=state_label,labelOptions = labelOptions(textsize = "10px",
+style = list(
+"color" = "black",
+"font-family" = "serif",
+"font-style" = "italic",
+"box-shadow" = "3px 3px rgba(0,0,0,0.25)",
+"font-size" = "12px",
+"border-color" = "rgba(0,0,0,0.5)")), group = "1er Semestre 2018" ) %>%
+addPolygons(fillColor=~tal(Tasa_pobreza.y),fillOpacity= 0.8,color="White",stroke=TRUE,
+            weight=1,popup = state_popup3,label=state_label2,labelOptions = labelOptions(textsize = "10px",
+style = list(
+"color" = "black",
+"font-family" = "serif",
+"font-style" = "italic",
+"box-shadow" = "3px 3px rgba(0,0,0,0.25)",
+"font-size" = "12px",
+"border-color" = "rgba(0,0,0,0.5)")), 
+            group = "2ndo Semestre 2018" ) %>%
+addLayersControl(
+    baseGroups =  c("1er Semestre 2018","2ndo Semestre 2018"),
+    options = layersControlOptions(collapsed = FALSE) 
+)%>%
+addLegend("bottomright",pal=tal,values= ~Tasa_pobreza.x ,title="Tasa de Pobreza\n(en %) ",
+group = "1er Semestre 2018" ,labFormat = labelFormat(prefix = "(",suffix="]",transform=function(Tasa_pobreza.x ) 100 * Tasa_pobreza.x ))
+```
+
