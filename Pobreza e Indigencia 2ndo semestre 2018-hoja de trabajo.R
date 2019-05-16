@@ -1,15 +1,3 @@
----
-title: " Medidas de Indigencia y Pobreza - Segundo Semestre - 2018 " 
-date: 10 de Mayo,2019
-output:
-   html_document:
-    toc: true
-    number_sections: true
-    toc_float: true
-    mathjax: "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" 
----
-```{r setup, include= FALSE}
-
 library(tidyverse, warn = FALSE)
 library(openxlsx, warn = FALSE)
 library(DT)
@@ -23,54 +11,10 @@ library(convey)
 library(survey)
 library(vardpoor)
 
-
-
-
-EPH_provincias <- readRDS("EPH_provincias2.rds") # puede descargar la base de datos en el repositorio: https://github.com/NahuelBargas/sitio-personal/ y también el script utilizado para preparlarla: https://github.com/NahuelBargas/sitio-personal/blob/master/Pobreza%20e%20Indigencia%202ndo%20semestre%202018-Preparaci%C3%B3n%20de%20base.R
-```
-# Introducción 
-
-Éste documento es, básicamente, una continuación del análisis de la pobreza e indigencia del primer semestre de 2018 [(ver aquí)](http://nahuelbargas.github.io/sitio-personal/1er_semestre_2018.html),
-pero con datos del segundo semestre de dicho año. En esta ocasión, a su vez,  podra acceder al archivo [Rmd](https://github.com/NahuelBargas/sitio-personal/2ndo%20semestre%202018-Pobreza%20e%20Indigencia.Rmd) donde figuran los comandos que utilizé en R , por si desea replicar los resultados obtenidos.
-
- 
-Los detalles teóricos pueden consultarse en el libro de Gasparini,Cicowiez y Sosa Escudero^[Gasparini,L. , Cicowiez, M. y Sosa Escudero, W. (2013).  Pobreza y Desigualdad en América Latina. 
-Conceptos, Herramientas y Aplicaciones. Editorial Temas.] : *"Pobreza y Desigualdad en América Latina. Conceptos, herramientas y aplicaciones (2013)"* , quienes a su vez brindan al lector
-material práctico en relación a bases de datos de LA para STATA. El sitio para descargar el libro y material
-complementario puede visitarse [aquí](http://www.cedlas.econo.unlp.edu.ar/wp/en/publicaciones/libros/pobreza-y-desigualdad-en-america-latina/).
-
-También recomiendo el siguiente curso: 
-[Utilización del lenguaje R para la aplicación en la EPH](https://github.com/DiegoKoz/Curso_R_EPH) , de Diego Kozlowski, Guido Weksler y Natsumi Shokida.
-
-A continuación, presento las estimaciones realizadas. En líneas generales los indicadores se han agravado, en relación a los obtenidos en la [anterior entrada](http://nahuelbargas.github.io/sitio-personal/1er_semestre_2018.html)
-Repito la descripción de las medidas de pobreza e indigencia por motivos didácticos.
-
+EPH_provincias <- readRDS("EPH_provincias2.rds")
 
 
 # Tasa Incidencia, descomposición por regiones
-
-La metodología oficial utilizada por el INDEC, cuya descripción puede consultarse [aquí](https:/ /www.indec.gob.ar/ftp/cuadros/sociedad/EPH_metodologia_22_pobreza.pdf)
-consiste en el método de medición indirecto u línea.
-La pobreza por método indirecto parte de la determinación de una canasta de bienes y servicios que 
-permitiría, a un costo mínimo, la satisfacción de las necesidades básicas, e identifica a la población carenciada a los individuos
-cuyo ingreso se ubique por debajo del costo de esta canasta. Éste método no mide las carencias directamente 
-sino la insuficiencia de recursos que permitan tener acceso a la satisfacción de esas carencias.
- 
-Al individuo se lo pondera en relación a un adulto equivalente,  teniendo en cuenta sus necesidades calóricas 
-en base a edad y género, y se lo compara con la línea de canasta básica alimentaria(CBA), en términos monetarios. 
-Todas aquellas personas cuyo  ingreso total familiar se encuentre por debajo de la línea, se las considera indigentes. 
-Mediante la inversa del coeficiente de Engel, se llega a la canasta básica total, que tiene en cuenta otros bienes y servicios no alimentarios. 
-Nuevamente,aquellas personas que se ubiquen por debajo de la misma se denominan pobres. Éste indicador, 
-conocido cómo headcount ratio, es el más difundido pero tiene algunos problemas, por ejemplo,  
-si se agrava la situación de una persona por debajo de la línea, el indicador no se altera. 
-Por ende, a posteriori también presentaré la brecha de pobreza y el grado de severidad.
-
-A continuación, se desagrega el indicador de incidencia, FGT(0) según las seis regiones para la base de invididuos del
-primer semestre de 2018 :   
-
-```{r descm, include=FALSE}
-
-#Cómputo del FGT para una base con el ingreso dado por la variable x
 
 FGT2<- function(x,wt,alfa,lp,obs) {
 each=numeric(obs)
@@ -86,6 +30,7 @@ fgt2=(sum(each*wt)/sum(wt))*100
 print(fgt2)
 
 }
+
 
 fgttotalpob=FGT2(EPH_provincias$ITF,EPH_provincias$PONDIH,0,EPH_provincias$CBT,114297)
 fgttotalind=FGT2(EPH_provincias$ITF,EPH_provincias$PONDIH,0,EPH_provincias$CBA,114297)
@@ -110,22 +55,6 @@ Total_país<-list('TotalPaís',as.numeric( fgttotalpob/100),as.numeric(fgttotalind
 names(Total_país)= names(Pobreza_resumen_region)
 
 
-
-```
-
-```{r incidencia regiones, echo= FALSE, fig.width= 9, fig.align='center'}
-
-
-bind_rows(Pobreza_resumen_region, Total_país) %>%
-knitr::kable(align = 'c',digits = 2,
-caption = "**Cuadro 1- Pobreza e Indigencia según Región**", col.names = c("Región","Tasa de pobreza","Tasa de indigencia"))%>% 
-kable_styling("striped", full_width = FALSE) %>%
-column_spec(1, bold = T, border_right = T) %>%
-column_spec(2:3, width = "3cm") %>%
-row_spec(0, bold = T,color="white", background = "lightblue") %>%
-row_spec(7, bold = T,color="white", background = "lightblue") 
-
-
 ggplot(Pobreza_resumen_region, aes(Region,Tasa_pobreza,label = sprintf("%1.1f%%", 100*Tasa_pobreza))) +
 geom_bar(aes(fill= "Tasa de Pobreza"),stat="identity")+
 geom_text(position = position_stack(vjust = 0.98), size=3)+
@@ -144,14 +73,12 @@ theme(axis.title.x = element_text(
      lineheight = .9,
      face = "bold", colour = "black"
   ))
-```
 
-> Si lo desea, puede visualizar el cambio en la tasa de incidencia de la pobreza en el 2018 en un [mapa](http://nahuelbargas.github.io/sitio-personal/mapa_pobreza_argentina.html)
- 
- 
+
+
+
 # Tasa de Incidencia, descomposición por Aglomerados
 
-```{r , include=FALSE}
 Aglomerados <- read.xlsx("Aglomerados EPH.xlsx")
 EPH_provincias_aglo<- EPH_provincias %>% left_join(Aglomerados)
 
@@ -163,17 +90,6 @@ summarise(Tasa_pobreza = sum(PONDIH[Situacion %in% c('Pobre', 'Indigente')],na.r
 sum(PONDIH,na.rm = TRUE),
 Tasa_indigencia = sum(PONDIH[Situacion == 'Indigente'],na.rm = TRUE)/
 sum(PONDIH,na.rm = TRUE))
-```
-
-Siguiendo con el análisis anterior, se repite el ejercicio descomponiendo el indicador para los 31 aglomerados urbanos
-Para saber más sobre las características de los aglomerados, siga éste [enlace](https:/ /www.google.com.ar/url?
-sa=t&source=web&rct=j&url=https://www.indec.gov.ar/uploads/informesdeprensa/eph_pobreza_02_18.pdf&ved=2ahUKEwiY94u1_7bgAhWrFbkGHVgeCulQFjAAegQIBBAB&usg=AOvVaw29tM-RDtykZAVsTWoGRJ4Z)
-
-```{r incidencia aglomerados, echo= FALSE, fig.width= 9, fig.align='center'}
-
-datatable(data.frame(Pobreza_resumen_aglomerado[1],round(Pobreza_resumen_aglomerado[2:3],2)), 
-caption = "Cuadro2-Pobreza e Indigencia según Aglomerado", colnames = c("Aglomerado","Tasa de pobreza","Tasa de indigencia"),options = list(pageLength = 5, autoWidth = TRUE)
-)
 
 
 ggplot(Pobreza_resumen_aglomerado, aes(reorder(Nom_Aglo,Tasa_pobreza),Tasa_pobreza,label = sprintf("%1.1f%%", 100*Tasa_pobreza))) +
@@ -192,20 +108,8 @@ theme(plot.title = element_text(
     face = "bold.italic", colour = "darkblue"
   )) 
 
-```
-
 
 # Brecha de pobreza y descomposición regional
-
-El _Poverty Gap_,que puede obtenerse vía el FGT(1), muestra la contribución de cada individuo pobre a la pobreza agregada y
-es igual a la brecha que lo separa de la línea de pobreza. Cómo dicen **Gasparini et.al.(2013)**, la contibución del individuo "i"
-a la pobreza total es mayor cuanto menor es su nivel de vida.
-
-El indicador FGT puede escribirse cómo: $FGT(\alpha) = \frac{1}{N} \sum_{i=1}^{N}(1-\frac{x_i}{z})^\alpha 1(x_i < z)$ , con $\alpha$ mayor o igual a 0.
-
-
-
-```{r breca datos, include= FALSE }
 
 FGTtotal=FGT2(EPH_provincias$ITF,EPH_provincias$PONDIH,1,EPH_provincias$CBT,114297)
 FGTtotalInd=FGT2(EPH_provincias$ITF,EPH_provincias$PONDIH,1,EPH_provincias$CBA,114297)
@@ -256,44 +160,15 @@ base2<- tibble(Región =c("GBA","Cuyo","Noreste","Nororeste","Pampeana","Patagoni
 "FGT(1)" = c(round(FGTregionGBA,2),round(FGTregionCUY,2),round(FGTregionNEA,2),round(FGTregionNOA,2),round(FGTregionPAM,2),round(FGTregionPAT,2),round(FGTtotal,2)),
 "Contribución Regional" = c(round(ContGBA,2),round(ContCUY,2),round(ContNEA,2),round(ContNOA,2),round(ContPAM,2),round(ContPAT,2),100))
 
-```
-
-La tabla 3 muestra que GBA es la región con mayor valor en terminos porcentuales para la brecha de pobreza,
-y a su vez es la que mayor contribuye proporcionalmente a la suma del indicador total, mucho tiene que ver
-el hecho de ser la región con más peso en la EPH.
- 
-
-```{r brecha , echo= FALSE }
-
-brecha<-knitr::kable(base2,align = 'c',digits=2,row.names=FALSE,"html", escape = F,
-caption = "**Cuadro 3-Descomposición brecha  
-de Pobreza según Región**") %>%
-kable_styling("bordered", full_width = FALSE) %>%
-  column_spec(1, bold = T, border_right = T) %>%
-  column_spec(2:3, width = "3cm") %>%
-row_spec(7, bold = T,color="White", background = "lightblue") %>%
-row_spec(0, italic =T ,color="White", background = "lightblue")
-brecha
-
-```
-En en segundo semestre, el noreste fue la región que más empeoró en consideración al primer trimestre.
 
 # Severidad  de la pobreza y descomposición regional
 
-Se denomina brecha de pobreza cuadrática u profundidad de la pobreza al indicador FGT(2),
-en el cuál el nivel de vida de los pobres tiene un mayor peso proporcional y si se diera 
-una transferencia igualadora de ingresos dentro del grupo de los pobres, la severidad de
-la pobreza disminuirá (**Gasparini et.al.(2013)**), algo que no muestran el FGT(0) ni el FGT(1).
-
-
-```{r severidad datos, include= FALSE }
-
-FGTtotal2=FGT2(EPH_provincias$ITF,EPH_provincias$PONDIH,2,EPH_provincias$CBT,114297)
-FGTtotalInd2=FGT2(EPH_provincias$ITF,EPH_provincias$PONDIH,2,EPH_provincias$CBA,114297)
+FGTtotal2<- FGT2(EPH_provincias$ITF,EPH_provincias$PONDIH,2,EPH_provincias$CBT,114297)
+FGTtotalInd2<- FGT2(EPH_provincias$ITF,EPH_provincias$PONDIH,2,EPH_provincias$CBA,114297)
 
 
 
-matrizregiones2=as.matrix(EPH_provincias %>% 
+matrizregiones2<- as.matrix(EPH_provincias %>% 
 count(REGION, wt= PONDIH)/sum(EPH_provincias$PONDIH) )
 
 
@@ -337,37 +212,9 @@ base3<- tibble(Región =c("GBA","Cuyo","Noreste","Nororeste","Pampeana","Patagoni
 "FGT(2)" = c(round(FGTregionGBA2,2),round(FGTregionCUY2,2),round(FGTregionNEA2,2),round(FGTregionNOA2,2),round(FGTregionPAM2,2),round(FGTregionPAT2,2),round(FGTtotal2,2)),
 "Contribución Regional" = c(round(ContGBA2,2),round(ContCUY2,2),round(ContNEA2,2),round(ContNOA2,2),round(ContPAM2,2),round(ContPAT2,2),100))
 
-```
-
- 
-```{r severidad , echo= FALSE }
-
-severidad<-knitr::kable(base3,align = 'c',digits=2,row.names=FALSE,"html", escape = F,
-caption = "**Cuadro 4-Descomposición severidad  
-de Pobreza según Región**") %>%
-kable_styling("bordered", full_width = FALSE) %>%
-  column_spec(1, bold = T, border_right = T) %>%
-  column_spec(2:3, width = "3cm") %>%
-row_spec(7, bold = T,color="White", background = "lightblue") %>%
-row_spec(0, italic =T ,color="White", background = "lightblue")
-severidad
-
-```
-
 
 # Algunas características habitacionales, rango etario y nivel educativo en el análisis de pobreza e indigencia.
 
-El siguiente cuadro presenta variables dicotómicas(agua, cloacas, materiales precarios, baño) definidas bajo un criterio
-positivo,cuyo promedio indica la proporción de observaciones que cuentan con la caracteristica señalada.
-A su vez se señala el número de habitantes por cuartos para cada grupo,también en promedio .
-
-La variable agua hace alusión al acceso de agua de red corriente dentro 
-del terreno del hogar, materiales precarios a las características de los pisos y techos de la vivienda, 
-cloacas si el desague del baño es a la red pública y baño si el hogar cuenta con el mismo
-dentro de la propiedad y posee arrastre de agua. EL INDEC realiza un análisis similar, puede consultarse
-la metodología [aquí](https:/ /www.indec.gob.ar/uploads/informesdeprensa/eph_indicadores_hogares_02_18.pdf).   
-
-```{r vivienda, echo= FALSE }
 
 EPH_provincias_2 <- EPH_provincias  %>% 
   mutate(Sexo = as.character(CH04),
@@ -451,17 +298,8 @@ caption = "** Cuadro 5- Proporción de indicadores habitacionales según condición
 kable_styling("striped", full_width = FALSE)%>%
 row_spec(0, bold = T,color="white", background = "lightblue") 
 MediasPobreza
-```
 
-Todas las diferencias entre grupos son significativas a 1%. Los individuos pobres,
-en el sentido de pobreza moderada y teniendo en cuenta solamente el indicador de incidencia,
-en promedio una mayor proporción de pobres habitan en viviendas con materiales precarios,
-tienen un menor acceso a cloacas y sus hogares cuentan con 3 individuos por cuarto.
 
-Finalmente, los niños y las personas con nivel primario incompleto o sin instrucción
-son las que poseen una mayor tasa de incidencia de pobreza e indigencia:
-
-```{r pobreza edad educación, echo=FALSE}
 Pobreza_resumen_totales <- EPH_provincias_4  %>%
 summarise(Total_Pobres = sum(PONDIH[Situacion %in% c('Pobre', 'Indigente')],na.rm = TRUE),
 Total_indigentes = sum(PONDIH[Situacion == 'Indigente'],na.rm = TRUE),
@@ -500,27 +338,10 @@ row_spec(0, bold = T,color="white", background = "lightblue")
 Pobreza_resumen_educación
 
 
-
-```
-
-
 # Pobreza Multidimensional
 
 ## Tasa de incidencia multidimensional
 
-Aquí presento un ejemplo simple de la tasa de incidencia multidimensional , definida por el número de 
-pobres que surgen de fijar diferentes umbrales y número de privaciones(k), dividido por el total 
-de la población. Este indicador viola la propiedad de monotonicidad dimensional, si se agrava la situación de 
-una persona con respecto a una nueva carencia, el indicador  no se ve alterado.
-
-La tasa de pobreza  está caracterizado por seis dimensiones: una persona es pobre en cada una de las 
-dimensiones si en su familia: 1) su ingreso total familiar es inferior a la canasta básica total, teniendo en 
-cuenta la cantidad de adultos equivalentes que integran el hogar; 2) se encuentran más de 3 personas por cuarto 
-para dormir; 3)  la vivienda ésta construida con material precario ;4) no poseen un acceso adecuado al 
-agua potable; 5) no tienen un baño sanitario correcto y 6) tampoco cuentan con cloacas.
-
-
-```{r pobreza multi, echo=FALSE}
 
 EPH_provincias_5 <-  EPH_provincias_4 %>%
 mutate ( indic1 = Pobre, 
@@ -571,33 +392,8 @@ col.names=c("K-Dimensiones", "Tasa de Pobreza (%)"), row.names=FALSE)%>%
 kable_styling("striped", full_width = FALSE) %>%
 row_spec(0, bold = T,color="white", background = "lightblue") 
 
-```
-
-En base a los datos del Cuadro 8, bajo el criterio de la unión (k=1), 
-el 58% de la población sufre privaciones en al menos una de las dimensiones para el segundo semestre del 2018,en cambio,
-el porcentaje en la muestra que carece de todas las dimensiones(k=6, criterio de la intersección), es muy pequeño, 0.08%.
-
-
 ## Medidas de Pobreza Multidimensional de Alkire y Foster
 
-Las medidas de pobreza de Alkire y Foster extienden el indicador clásico FGT,
-permitiendo diferentes puntos de cortes o líneas para k dimensiones y que los ponderadores(w)
-asignados a cada dimensión puedan variar. La mécanica es bastante sencilla: primero se determina si el hogar es
-pobre en algunas de las dimensiones, y luego se cuentan el número de privaciones para
-ver si se llega a un umbral específico.En caso de que éste evento ocurra, dicho hogar se considerará pobre multidimensional.
-Cómo en los casos anteriores, el parámetro alfa regula la importancia relativa entre las brechas de pobreza. (Gasparini et. al. 2013).
-
-$AF(\alpha,k) = \frac{1}{N} \sum_{i=1}^{N} [ \frac{1}{J} \sum_{i=1}^{N} w_j g_{ij}(k)^\alpha]$
-
-Cuando alfa es igual a cero, uno, y dos, AF se convierte en la tasa de incidencia ajustada, 
-brecha de pobreza ajustada y brecha de pobreza cuadrática, respectivamente. 
-Esta familia de indicadores también permite que la información de las encuestas,
-tanto cuantitativa cómo cualitativa(pj. nociones de satisfacción individual) pueda ser
-conbinada ( Battiston et. al. 2009^[Battistón, D., Cruces, G., López Calva, L.F., Lugo, A.M. y Santos, M.E. 
-2009. Income and beyond: multidimensional poverty in six Latin American countries. Documento de 
-Trabajo N° 17 de OPHI, y Documento de Trabajo  N°90 del CEDLAS,UNLP.])
-
-```{r pobreza AF, echo=FALSE}
 
 EPH_provincias_5_des<-svydesign( ids = ~CODUSU , strata = ~Region ,  weights = ~PONDIH , data = EPH_provincias_5 )
 EPH_provincias_5_des <- convey_prep(EPH_provincias_5_des)
@@ -644,24 +440,10 @@ caption = " **Cuadro 9- Medidas de Pobreza Multidimensional de Alkire y Foster
 _Valores alternativos de k_**", row.names=FALSE)%>% 
 kable_styling("striped", full_width = FALSE) %>%
 row_spec(0, bold = T,color="white", background = "lightblue") 
-```
-
-En la tabla 9 se ejemplifica el indicador para los tres valores posibles del 
-parámetro alfa, y teniendo en cuenta el umbral de privaciones k.
-Las cuatro privaciones son: ingreso total familiar por debajo de la canasta básica
-total, un ratio de miembros sobre cuartos disponibles mayor a tres, una vivienda que 
-poseamateriales precarios, y la ausencia de conexión a cloacas.
-Cómo en la subsección anterior, bajo el criterio de la unión(k=1), 25 por ciento de los 
-individuos serían pobres multidimensionales, mirando la tasa de incidencia. Para el criterio
-de la intersección, k igual a todas las dimensiones, sólo el 2% ingresarían en la
-pobreza multidimensional, esto es aproximademente similar para las brechas de pobreza ajustadas.
 
 
-El indicador de Alkire y Foster también permite realizar descomposiciones por grupos cómo por las
-dimensiones consideradas. En el próximo cuadro se detalla la contribución de las variables k
-para el AF(0,1):
+#Contribución Porcentual de la dimensión.
 
-```{r AF2, echo=FALSE}
 
 z<-svyafcdec( ~ ITF + nohacina + nomatpreca + cloacas ,design= EPH_provincias_5_des ,group= ~REGION , k = 0.25 , g = 0, cutoffs = cut2 )
 
@@ -674,13 +456,4 @@ knitr::kable(base10,align = 'c',digits=4,
 caption = " **Cuadro 10- Contribución Porcentual de la dimensión.  
 _Medidas de Pobreza Multidimensional de Alkire y Foster_**", row.names=FALSE, col.names=c("Dimensión","Contribución %", "Desvío Estandar"))%>% 
 kable_styling("striped", full_width = FALSE) %>%
-row_spec(0, bold = T,color="white", background = "lightblue") 
-```
-
-
-La ausencia de cloacas es la que mayor contribuye proporcionalmente a la suma final del indicador, pero el bajo Ingreso Total Familiar en relación 
-a la línea de pobreza aumentó considerablemente su participación en relación al semestre pasado. .
-
-
-
-
+row_spec(0, bold = T,color="white", background = "lightblue")

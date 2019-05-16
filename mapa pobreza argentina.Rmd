@@ -26,7 +26,7 @@ en R, a continuación les presento un pequeño ejemplo para Argentina.
 Puede pasar el mouse sobre las partes del mapa u hacer un click, para
 poder visualizar la tasa de pobreza estimada por regiones para cada semestre
 del 2018 en base a datos del INDEC. Deberá seleccionar en el márgen superior derecho
-el período deseado.  En el [repositorio](https://github.com/NahuelBargas/sitio-personal/) encontrará 
+el período deseado.  En el [repositorio](https://github.com/NahuelBargas/sitio-personal/blob/master/mapa%20pobreza%20argentina.Rmd) encontrará 
 los comandos para replicar el mapa.
 
 ```{r incidencia regiones, echo= FALSE}
