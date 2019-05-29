@@ -66,7 +66,7 @@ si se agrava la situación de una persona por debajo de la línea, el indicador no
 Por ende, a posteriori también presentaré la brecha de pobreza y el grado de severidad.
 
 A continuación, se desagrega el indicador de incidencia, FGT(0) según las seis regiones para la base de invididuos del
-primer semestre de 2018 :   
+segundo semestre de 2018 :   
 
 ```{r descm, include=FALSE}
 
@@ -258,7 +258,9 @@ base2<- tibble(Región =c("GBA","Cuyo","Noreste","Nororeste","Pampeana","Patagoni
 
 ```
 
-La tabla 3 muestra que GBA es la región con mayor valor en terminos porcentuales para la brecha de pobreza,
+En en segundo semestre, el noreste fue la región que más empeoró en consideración al primer trimestre.
+
+La tabla 3 muestra que GBA es la segunda región con mayor valor en terminos porcentuales para la brecha de pobreza,
 y a su vez es la que mayor contribuye proporcionalmente a la suma del indicador total, mucho tiene que ver
 el hecho de ser la región con más peso en la EPH.
  
@@ -276,7 +278,6 @@ row_spec(0, italic =T ,color="White", background = "lightblue")
 brecha
 
 ```
-En en segundo semestre, el noreste fue la región que más empeoró en consideración al primer trimestre.
 
 # Severidad  de la pobreza y descomposición regional
 
@@ -679,7 +680,7 @@ row_spec(0, bold = T,color="white", background = "lightblue")
 
 
 La ausencia de cloacas es la que mayor contribuye proporcionalmente a la suma final del indicador, pero el bajo Ingreso Total Familiar en relación 
-a la línea de pobreza aumentó considerablemente su participación en relación al semestre pasado. .
+a la línea de pobreza aumentó considerablemente su participación en relación al semestre pasado.
 
 
 
