@@ -58,9 +58,9 @@ plot.title = element_textbox_simple(
       size = 13, lineheight = 1,margin=margin(b = 0, t = 4, l =-4 ,r=-4, unit = "pt"),padding=margin(5.5,5.5,5.5,5.5),
       width = grid::unit(13, "cm"),
       r = grid::unit(3, "pt"),
-      linetype = 1, # turn on border
-      box.color = "#748696", # border color
-      fill = "#F0F7FF", # background fill color
+      linetype = 1, 
+      box.color = "#748696", 
+      fill = "#F0F7FF",
     ) )
 
 
